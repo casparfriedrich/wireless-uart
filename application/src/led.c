@@ -19,9 +19,12 @@ static const u32_t led1_gpio_pin = LED1_GPIO_PIN;
 static const u32_t led2_gpio_pin = LED2_GPIO_PIN;
 static const u32_t led3_gpio_pin = LED3_GPIO_PIN;
 
-static void led_init(struct device* controller, u32_t* pin)
+static void led_init(const char* device_name, u32_t* pin)
 {
 	int err __unused = 0;
+
+	struct device* controller = device_get_binding(device_name);
+	__ASSERT_NO_MSG(controller != NULL);
 
 	err = gpio_pin_configure(controller, *pin, GPIO_DIR_OUT);
 	__ASSERT(err == 0, "gpio_pin_configure (%d)", err);
@@ -30,12 +33,12 @@ static void led_init(struct device* controller, u32_t* pin)
 	__ASSERT(err == 0, "gpio_pin_write (%d)", err);
 }
 
-static void led_hold(char* device_name, u32_t* pin, struct k_sem* alert)
+static void led_hold(const char* device_name, u32_t* pin, struct k_sem* alert)
 {
+	led_init(device_name, pin);
+
 	struct device* controller = device_get_binding(device_name);
 	__ASSERT_NO_MSG(controller != NULL);
-
-	led_init(controller, pin);
 
 	while (1)
 	{
@@ -44,12 +47,12 @@ static void led_hold(char* device_name, u32_t* pin, struct k_sem* alert)
 	}
 }
 
-static void led_flash(char* device_name, u32_t* pin, struct k_sem* alert)
+static void led_flash(const char* device_name, u32_t* pin, struct k_sem* alert)
 {
+	led_init(device_name, pin);
+
 	struct device* controller = device_get_binding(device_name);
 	__ASSERT_NO_MSG(controller != NULL);
-
-	led_init(controller, pin);
 
 	while (1)
 	{

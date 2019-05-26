@@ -34,17 +34,17 @@ K_THREAD_DEFINE(
 
 void serial_callback(struct device* device)
 {
-	uart_irq_update(device);
-
 	k_sem_give(&wired_activity_alert);
+
+	uart_irq_update(device);
 
 	if (uart_irq_rx_ready(device))
 	{
-		while (1)
+		do
 		{
-			static u8_t buffer[32];
+			static u8_t buffer[CONFIG_NRF_ESB_MAX_PAYLOAD_LENGTH];
 
-			u32_t received = uart_fifo_read(device, buffer, 32);
+			u32_t received = uart_fifo_read(device, buffer, sizeof(buffer));
 			__ASSERT(received >= 0, "uart_fifo_read (%d)", received);
 
 			if (received <= 0)
@@ -59,13 +59,14 @@ void serial_callback(struct device* device)
 
 			if (err)
 			{
+				LOG_WRN("No memory");
 				break;
 			}
 
 			memcpy(message->data, buffer, received);
 			message->length = received;
 			k_fifo_put(&serial2wireless_fifo, message);
-		}
+		} while (0);
 	}
 }
 
