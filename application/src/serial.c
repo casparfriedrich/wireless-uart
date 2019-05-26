@@ -12,7 +12,7 @@
 #define PRIORITY -3
 #define STACKSIZE KB(2)
 
-LOG_MODULE_DECLARE(usb_adapter, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(Serial, LOG_LEVEL_DBG);
 
 extern struct k_sem wired_activity_alert;
 extern struct k_mem_slab package_buffer_slab;
@@ -71,6 +71,8 @@ void serial_callback(struct device* device)
 
 void serial_thread_function(void* arg0, void* arg1, void* arg2)
 {
+	LOG_INF("Starting serial thread");
+
 	struct device* serial_device = device_get_binding(DT_NORDIC_NRF_USBD_VIRTUALCOM_LABEL);
 
 	while (1)

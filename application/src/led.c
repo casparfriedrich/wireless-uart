@@ -6,7 +6,7 @@
 #define PRIORITY -2
 #define STACKSIZE KB(1)
 
-LOG_MODULE_DECLARE(usb_adapter, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(Led, LOG_LEVEL_DBG);
 
 K_SEM_DEFINE(error_alert, 0, 1);
 K_SEM_DEFINE(wired_activity_alert, 0, 1);

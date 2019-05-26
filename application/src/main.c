@@ -7,7 +7,7 @@
 #include "serial.h"
 #include "types.h"
 
-LOG_MODULE_REGISTER(usb_adapter, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(Main, LOG_LEVEL_DBG);
 
 K_MEM_SLAB_DEFINE(package_buffer_slab, sizeof(struct message_t), 128, 4);
 

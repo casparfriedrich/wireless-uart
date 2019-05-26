@@ -13,7 +13,7 @@
 #define PRIORITY -3
 #define STACKSIZE KB(2)
 
-LOG_MODULE_DECLARE(usb_adapter, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(ESB, LOG_LEVEL_DBG);
 
 extern struct k_sem wireless_activity_alert;
 extern struct k_mem_slab package_buffer_slab;
