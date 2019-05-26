@@ -1,0 +1,16 @@
+---
+AlignAfterOpenBracket: AlwaysBreak
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBraces: Allman
+ColumnLimit: 0
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+DerivePointerAlignment: false
+IndentCaseLabels: true
+IndentWidth: 4
+KeepEmptyLinesAtTheStartOfBlocks: false
+PointerAlignment: Left
+TabWidth: 4
+UseTab: Always
+...
