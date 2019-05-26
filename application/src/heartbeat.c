@@ -12,8 +12,6 @@ K_TIMER_DEFINE(heartbeat_delay, NULL, NULL);
 
 void heartbeat_function(void* arg_0, void* arg_1, void* arg_)
 {
-	LOG_INF("%s (%p)", k_thread_name_get(k_current_get()), k_current_get());
-
 	int err __unused = 0;
 	int phase = 0;
 

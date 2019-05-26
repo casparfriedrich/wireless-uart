@@ -72,8 +72,6 @@ void serial_irq_callback(struct device* device)
 
 void serial_thread_function(void* arg0, void* arg1, void* arg2)
 {
-	LOG_INF("%s (%p)", k_thread_name_get(k_current_get()), k_current_get());
-
 	while (1)
 	{
 		struct message_t* message = k_fifo_get(&wireless2serial_fifo, K_FOREVER);
@@ -84,11 +82,7 @@ void serial_thread_function(void* arg0, void* arg1, void* arg2)
 
 void serial_init(void)
 {
-#ifdef CONFIG_SOC_NRF52840
 	serial_device = device_get_binding(DT_NORDIC_NRF_USBD_VIRTUALCOM_LABEL);
-#elif CONFIG_SOC_NRF52832
-	serial_device = device_get_binding(UART_0_LABEL);
-#endif
 
 	uart_irq_callback_set(serial_device, serial_irq_callback);
 	uart_irq_rx_enable(serial_device);

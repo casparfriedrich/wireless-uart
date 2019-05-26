@@ -26,8 +26,6 @@ void hf_clock_init(void)
 
 void main(void)
 {
-	LOG_INF("%s", __func__);
-
 	hf_clock_init();
 	esb_init();
 	serial_init();

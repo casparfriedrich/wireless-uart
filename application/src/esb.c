@@ -90,8 +90,6 @@ void esb_event_callback(struct nrf_esb_evt const* event)
 
 void esb_thread_function(void* arg0, void* arg1, void* arg2)
 {
-	LOG_INF("%s (%p)", k_thread_name_get(k_current_get()), k_current_get());
-
 	static int __unused err = 0;
 	static struct nrf_esb_payload payload = NRF_ESB_CREATE_PAYLOAD(0);
 

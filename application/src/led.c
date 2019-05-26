@@ -30,10 +30,8 @@ static void led_init(struct device* controller, u32_t* pin)
 	__ASSERT(err == 0, "gpio_pin_write (%d)", err);
 }
 
-void led_hold(char* device_name, u32_t* pin, struct k_sem* alert)
+static void led_hold(char* device_name, u32_t* pin, struct k_sem* alert)
 {
-	LOG_INF("%s (%p)", k_thread_name_get(k_current_get()), k_current_get());
-
 	struct device* controller = device_get_binding(device_name);
 	__ASSERT_NO_MSG(controller != NULL);
 
@@ -46,10 +44,8 @@ void led_hold(char* device_name, u32_t* pin, struct k_sem* alert)
 	}
 }
 
-void led_flash(char* device_name, u32_t* pin, struct k_sem* alert)
+static void led_flash(char* device_name, u32_t* pin, struct k_sem* alert)
 {
-	LOG_INF("%s (%p)", k_thread_name_get(k_current_get()), k_current_get());
-
 	struct device* controller = device_get_binding(device_name);
 	__ASSERT_NO_MSG(controller != NULL);
 

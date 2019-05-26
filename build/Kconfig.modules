@@ -1,8 +1,0 @@
-osource "/home/caspar/Projects/ncs/nrf/Kconfig.nrf"
-
-osource "/home/caspar/Projects/ncs/mcuboot/zephyr/Kconfig"
-
-osource "/home/caspar/Projects/ncs/modules/lib/tinycbor/Kconfig.tinycbor"
-
-osource "/home/caspar/Projects/ncs/nrfxlib/Kconfig.nrfxlib"
-

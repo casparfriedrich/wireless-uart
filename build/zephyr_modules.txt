@@ -1,4 +1,0 @@
-"nrf":"/home/caspar/Projects/ncs/nrf"
-"mcuboot":"/home/caspar/Projects/ncs/mcuboot/zephyr"
-"tinycbor":"/home/caspar/Projects/ncs/modules/lib/tinycbor"
-"nrfxlib":"/home/caspar/Projects/ncs/nrfxlib"
