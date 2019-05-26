@@ -9,7 +9,7 @@
 
 LOG_MODULE_REGISTER(usb_adapter, LOG_LEVEL_DBG);
 
-K_MEM_SLAB_DEFINE(package_buffer_slab, sizeof(struct message_t), 100, 4);
+K_MEM_SLAB_DEFINE(package_buffer_slab, sizeof(struct message_t), 128, 4);
 
 K_FIFO_DEFINE(serial2wireless_fifo);
 K_FIFO_DEFINE(wireless2serial_fifo);

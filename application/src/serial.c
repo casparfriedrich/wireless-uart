@@ -19,8 +19,6 @@ extern struct k_mem_slab package_buffer_slab;
 extern struct k_fifo serial2wireless_fifo;
 extern struct k_fifo wireless2serial_fifo;
 
-struct device* serial_device;
-
 void serial_thread_function(void* arg0, void* arg1, void* arg2);
 
 K_THREAD_DEFINE(
@@ -34,7 +32,7 @@ K_THREAD_DEFINE(
 	0,
 	K_FOREVER);
 
-void serial_irq_callback(struct device* device)
+void serial_callback(struct device* device)
 {
 	uart_irq_update(device);
 
@@ -46,11 +44,6 @@ void serial_irq_callback(struct device* device)
 		{
 			static u8_t buffer[32];
 
-			if (!k_mem_slab_num_free_get(&package_buffer_slab))
-			{
-				break;
-			}
-
 			u32_t received = uart_fifo_read(device, buffer, 32);
 			__ASSERT(received >= 0, "uart_fifo_read (%d)", received);
 
@@ -59,9 +52,15 @@ void serial_irq_callback(struct device* device)
 				break;
 			}
 
-			struct message_t* message;
+			static struct message_t* message;
+
 			int err = k_mem_slab_alloc(&package_buffer_slab, (void**)&message, K_NO_WAIT);
 			__ASSERT(err == 0, "k_mem_slab_alloc (%d)", err);
+
+			if (err)
+			{
+				break;
+			}
 
 			memcpy(message->data, buffer, received);
 			message->length = received;
@@ -72,6 +71,8 @@ void serial_irq_callback(struct device* device)
 
 void serial_thread_function(void* arg0, void* arg1, void* arg2)
 {
+	struct device* serial_device = device_get_binding(DT_NORDIC_NRF_USBD_VIRTUALCOM_LABEL);
+
 	while (1)
 	{
 		struct message_t* message = k_fifo_get(&wireless2serial_fifo, K_FOREVER);
@@ -82,9 +83,9 @@ void serial_thread_function(void* arg0, void* arg1, void* arg2)
 
 void serial_init(void)
 {
-	serial_device = device_get_binding(DT_NORDIC_NRF_USBD_VIRTUALCOM_LABEL);
+	struct device* serial_device = device_get_binding(DT_NORDIC_NRF_USBD_VIRTUALCOM_LABEL);
 
-	uart_irq_callback_set(serial_device, serial_irq_callback);
+	uart_irq_callback_set(serial_device, serial_callback);
 	uart_irq_rx_enable(serial_device);
 
 	k_thread_start(serial_thread);
