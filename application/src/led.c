@@ -3,7 +3,7 @@
 #include <zephyr.h>
 #include <zephyr/types.h>
 
-#define PRIORITY -2
+#define PRIORITY 0
 #define STACKSIZE KB(1)
 
 LOG_MODULE_REGISTER(Led, LOG_LEVEL_DBG);
@@ -40,8 +40,7 @@ static void led_hold(const char* device_name, u32_t* pin, struct k_sem* alert)
 	struct device* controller = device_get_binding(device_name);
 	__ASSERT_NO_MSG(controller != NULL);
 
-	while (1)
-	{
+	while (1) {
 		k_sem_take(alert, K_FOREVER);
 		gpio_pin_write(controller, *pin, led_on);
 	}
@@ -54,8 +53,7 @@ static void led_flash(const char* device_name, u32_t* pin, struct k_sem* alert)
 	struct device* controller = device_get_binding(device_name);
 	__ASSERT_NO_MSG(controller != NULL);
 
-	while (1)
-	{
+	while (1) {
 		k_sem_take(alert, K_FOREVER);
 		gpio_pin_write(controller, *pin, led_on);
 		k_sleep(K_MSEC(50));
@@ -63,35 +61,32 @@ static void led_flash(const char* device_name, u32_t* pin, struct k_sem* alert)
 	}
 }
 
-K_THREAD_DEFINE(
-	led_error_thread,
-	STACKSIZE,
-	led_hold,
-	LED1_GPIO_CONTROLLER,
-	&led1_gpio_pin,
-	&error_alert,
-	PRIORITY,
-	0,
-	K_NO_WAIT);
+K_THREAD_DEFINE(led_error_thread,
+                STACKSIZE,
+                led_hold,
+                LED1_GPIO_CONTROLLER,
+                &led1_gpio_pin,
+                &error_alert,
+                PRIORITY,
+                0,
+                K_NO_WAIT);
 
-K_THREAD_DEFINE(
-	wired_activity_led_thread,
-	STACKSIZE,
-	led_flash,
-	LED2_GPIO_CONTROLLER,
-	&led2_gpio_pin,
-	&wired_activity_alert,
-	PRIORITY,
-	0,
-	K_NO_WAIT);
+K_THREAD_DEFINE(wired_activity_led_thread,
+                STACKSIZE,
+                led_flash,
+                LED2_GPIO_CONTROLLER,
+                &led2_gpio_pin,
+                &wired_activity_alert,
+                PRIORITY,
+                0,
+                K_NO_WAIT);
 
-K_THREAD_DEFINE(
-	wireless_activity_led_thread,
-	STACKSIZE,
-	led_flash,
-	LED3_GPIO_CONTROLLER,
-	&led3_gpio_pin,
-	&wireless_activity_alert,
-	PRIORITY,
-	0,
-	K_NO_WAIT);
+K_THREAD_DEFINE(wireless_activity_led_thread,
+                STACKSIZE,
+                led_flash,
+                LED3_GPIO_CONTROLLER,
+                &led3_gpio_pin,
+                &wireless_activity_alert,
+                PRIORITY,
+                0,
+                K_NO_WAIT);

@@ -18,9 +18,8 @@ void hf_clock_init(void)
 {
 	nrf_clock_task_trigger(NRF_CLOCK_TASK_HFCLKSTART);
 
-	while (nrf_clock_event_check(NRF_CLOCK_EVENT_HFCLKSTARTED) == false)
-	{
-		__NOP();
+	while (nrf_clock_event_check(NRF_CLOCK_EVENT_HFCLKSTARTED) == false) {
+		k_busy_wait(1000);
 	}
 }
 

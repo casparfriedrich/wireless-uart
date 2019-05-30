@@ -26,39 +26,33 @@ void heartbeat_function(void* arg_0, void* arg_1, void* arg_)
 
 	k_timer_start(&heartbeat_delay, 0, K_MSEC(350));
 
-	while (1)
-	{
+	while (1) {
 		k_timer_status_sync(&heartbeat_delay);
 
-		switch (phase % 5)
-		{
-			case 0:
-			{
-				gpio_pin_write(controller, LED0_GPIO_PIN, 0);
-				k_sleep(K_MSEC(50));
-				gpio_pin_write(controller, LED0_GPIO_PIN, 1);
-				break;
-			}
-			case 1:
-			{
-				gpio_pin_write(controller, LED0_GPIO_PIN, 0);
-				k_sleep(K_MSEC(50));
-				gpio_pin_write(controller, LED0_GPIO_PIN, 1);
-				break;
-			}
+		switch (phase % 5) {
+		case 0:
+			gpio_pin_write(controller, LED0_GPIO_PIN, 0);
+			k_sleep(K_MSEC(50));
+			gpio_pin_write(controller, LED0_GPIO_PIN, 1);
+			break;
+
+		case 1:
+			gpio_pin_write(controller, LED0_GPIO_PIN, 0);
+			k_sleep(K_MSEC(50));
+			gpio_pin_write(controller, LED0_GPIO_PIN, 1);
+			break;
 		}
 
 		phase++;
 	}
 }
 
-K_THREAD_DEFINE(
-	heartbeat_thread,
-	STACKSIZE,
-	heartbeat_function,
-	NULL,
-	NULL,
-	NULL,
-	PRIORITY,
-	0,
-	K_NO_WAIT);
+K_THREAD_DEFINE(heartbeat_thread,
+                STACKSIZE,
+                heartbeat_function,
+                NULL,
+                NULL,
+                NULL,
+                PRIORITY,
+                0,
+                K_NO_WAIT);
