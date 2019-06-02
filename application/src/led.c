@@ -8,9 +8,9 @@
 
 LOG_MODULE_REGISTER(Led, LOG_LEVEL_DBG);
 
-K_SEM_DEFINE(error_alert, 0, 1);
-K_SEM_DEFINE(wired_activity_alert, 0, 1);
-K_SEM_DEFINE(wireless_activity_alert, 0, 1);
+K_SEM_DEFINE(led_ind_error, 0, 1);
+K_SEM_DEFINE(led_ind_wired, 0, 1);
+K_SEM_DEFINE(led_ind_wireless, 0, 1);
 
 static const u32_t led_on = 0;
 static const u32_t led_off = 1;
@@ -19,7 +19,7 @@ static const u32_t led1_gpio_pin = LED1_GPIO_PIN;
 static const u32_t led2_gpio_pin = LED2_GPIO_PIN;
 static const u32_t led3_gpio_pin = LED3_GPIO_PIN;
 
-static void led_init(const char* device_name, u32_t* pin)
+static inline void led_init(const char* device_name, u32_t* pin)
 {
 	int err __unused = 0;
 
@@ -66,7 +66,7 @@ K_THREAD_DEFINE(led_error_thread,
                 led_hold,
                 LED1_GPIO_CONTROLLER,
                 &led1_gpio_pin,
-                &error_alert,
+                &led_ind_error,
                 PRIORITY,
                 0,
                 K_NO_WAIT);
@@ -76,7 +76,7 @@ K_THREAD_DEFINE(wired_activity_led_thread,
                 led_flash,
                 LED2_GPIO_CONTROLLER,
                 &led2_gpio_pin,
-                &wired_activity_alert,
+                &led_ind_wired,
                 PRIORITY,
                 0,
                 K_NO_WAIT);
@@ -86,7 +86,7 @@ K_THREAD_DEFINE(wireless_activity_led_thread,
                 led_flash,
                 LED3_GPIO_CONTROLLER,
                 &led3_gpio_pin,
-                &wireless_activity_alert,
+                &led_ind_wireless,
                 PRIORITY,
                 0,
                 K_NO_WAIT);

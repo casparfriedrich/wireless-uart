@@ -3,6 +3,7 @@
 #include <zephyr.h>
 #include <zephyr/types.h>
 
+#include "heartbeat.h"
 #include "serial.h"
 #include "types.h"
 
@@ -27,6 +28,8 @@ void hf_clock_init(void)
 void main(void)
 {
 	hf_clock_init();
+
+	heartbeat(LED0_GPIO_CONTROLLER, LED0_GPIO_PIN);
 
 	k_thread_start(esb_thread);
 	// serial_init();
