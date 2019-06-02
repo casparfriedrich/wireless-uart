@@ -1,5 +1,5 @@
 ---
-AllowShortFunctionsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
 BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBraces: Linux

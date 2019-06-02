@@ -6,7 +6,7 @@
 #define PRIORITY 0
 #define STACKSIZE KB(1)
 
-LOG_MODULE_DECLARE(usb_adapter, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(Heartbeat);
 
 K_TIMER_DEFINE(heartbeat_delay, NULL, NULL);
 
