@@ -29,8 +29,12 @@ void main(void)
 {
 	hf_clock_init();
 
+	//heartbeat_start(LED1_GPIO_CONTROLLER, LED1_GPIO_PIN);
 	heartbeat_start(LED0_GPIO_CONTROLLER, LED0_GPIO_PIN);
 
 	k_thread_start(esb_thread);
-	// serial_init();
+	serial_init();
 }
+
+
+

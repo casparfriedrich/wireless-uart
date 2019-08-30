@@ -40,6 +40,10 @@
 			gpios = <&gpio0 16 GPIO_INT_ACTIVE_LOW>;
 			label = "Green LED 3";
 		};
+		led4: led_4 {
+			gpios = <&gpio1 8 GPIO_INT_ACTIVE_LOW>;
+			label = "Green LED 4";
+		};
 	};
 
 	buttons {
@@ -68,6 +72,7 @@
 		led1 = &led1;
 		led2 = &led2;
 		led3 = &led3;
+		led4 = &led4;
 		sw0 = &button0;
 		sw1 = &button1;
 		sw2 = &button2;
@@ -92,7 +97,7 @@
 };
 
 &uart0 {
-	compatible = "nordic,nrf-uart";
+	compatible = "nordic,nrf-uarte";
 	current-speed = <115200>;
 	status = "ok";
 	tx-pin = <6>;

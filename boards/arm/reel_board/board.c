@@ -24,6 +24,7 @@ static int board_reel_board_init(struct device* dev)
 
 	gpio->OUTSET = BIT(PERIPH_PON_PIN);
 
+
 	/*
 	 * Enable pull-up on UART RX pin to reduce power consumption.
 	 * If the board is powered by battery and the debugger is

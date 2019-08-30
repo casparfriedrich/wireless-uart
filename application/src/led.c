@@ -18,6 +18,7 @@ static const u32_t led_off = 1;
 static const u32_t led1_gpio_pin = LED1_GPIO_PIN;
 static const u32_t led2_gpio_pin = LED2_GPIO_PIN;
 static const u32_t led3_gpio_pin = LED3_GPIO_PIN;
+static const u32_t led4_gpio_pin = LED4_GPIO_PIN;
 
 static inline void led_init(const char* device_name, u32_t* pin)
 {
@@ -64,8 +65,8 @@ static void led_flash(const char* device_name, u32_t* pin, struct k_sem* alert)
 K_THREAD_DEFINE(led_error_thread,
                 STACKSIZE,
                 led_hold,
-                LED1_GPIO_CONTROLLER,
-                &led1_gpio_pin,
+                LED4_GPIO_CONTROLLER,
+                &led4_gpio_pin,
                 &led_ind_error,
                 PRIORITY,
                 0,
@@ -74,8 +75,8 @@ K_THREAD_DEFINE(led_error_thread,
 K_THREAD_DEFINE(wired_activity_led_thread,
                 STACKSIZE,
                 led_flash,
-                LED2_GPIO_CONTROLLER,
-                &led2_gpio_pin,
+                LED4_GPIO_CONTROLLER,
+                &led4_gpio_pin,
                 &led_ind_wired,
                 PRIORITY,
                 0,
