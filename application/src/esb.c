@@ -9,7 +9,7 @@
 
 #define PRIORITY 3
 #define STACKSIZE KB(10)
-#define FRAME_TIME K_MSEC(50)
+#define FRAME_TIME K_MSEC(20)
 #define DEFAULT_BASE_ADDR_0            \
 	{                              \
 		0xE7, 0xE7, 0xE7, 0xE7 \
@@ -28,7 +28,7 @@ extern struct k_sem led_ind_wireless;
 extern struct k_msgq esb_frame_q;
 extern struct k_msgq serial_frame_q;
 
-static s64_t time_stamp = 0;
+static s64_t frame_time = 0;
 
 static void esb_thread_fn(void *arg0, void *arg1, void *arg2);
 static void frame_timer_expiry_fn(struct k_timer *timer);
@@ -43,8 +43,6 @@ void frame_timer_expiry_fn(struct k_timer *timer)
 	if (nrf_esb_is_idle()) {
 		if (nrf_esb_start_rx()) {
 			LOG_ERR("error starting RX mode");
-		} else {
-			LOG_DBG("starting RX mode");
 		}
 	}
 
@@ -57,13 +55,15 @@ void esb_event_callback(struct nrf_esb_evt const *event)
 	struct nrf_esb_payload payload;
 
 	k_sem_give(&led_ind_wireless);
-	time_stamp = k_uptime_get();
+	frame_time = k_uptime_get();
 
 	switch (event->evt_id) {
 	case NRF_ESB_EVENT_TX_SUCCESS:
+		LOG_DBG("NRF_ESB_EVENT_TX_SUCCESS");
 		break;
 
 	case NRF_ESB_EVENT_TX_FAILED:
+		LOG_DBG("NRF_ESB_EVENT_TX_FAILED");
 		err = nrf_esb_pop_tx();
 		if (err) {
 			LOG_ERR("error removing package");
@@ -77,6 +77,8 @@ void esb_event_callback(struct nrf_esb_evt const *event)
 			break;
 		}
 
+		LOG_HEXDUMP_DBG(payload.data, payload.length, "RX");
+
 		err = k_msgq_put(&esb_frame_q, &payload, K_NO_WAIT);
 		if (err) {
 			LOG_WRN("error storing message: %d", err);
@@ -88,7 +90,7 @@ void esb_event_callback(struct nrf_esb_evt const *event)
 
 void esb_thread_fn(void *arg0, void *arg1, void *arg2)
 {
-	LOG_DBG("Starting esb thread: %p", k_current_get());
+	LOG_INF("Starting esb thread: %p", k_current_get());
 
 	int err = 0;
 
@@ -115,11 +117,11 @@ void esb_thread_fn(void *arg0, void *arg1, void *arg2)
 	err = nrf_esb_start_rx();
 	__ASSERT(err == 0, "nrf_esb_start_rx: %d", err);
 
-	time_stamp = k_uptime_get();
+	frame_time = k_uptime_get();
 	k_timer_start(&frame_timer, FRAME_TIME, 0);
 
 	while (1) {
-		struct nrf_esb_payload payload;
+		static struct nrf_esb_payload payload = NRF_ESB_CREATE_PAYLOAD(0);
 
 		err = k_msgq_get(&serial_frame_q, &payload, K_FOREVER);
 		if (err) {
@@ -133,20 +135,18 @@ void esb_thread_fn(void *arg0, void *arg1, void *arg2)
 			continue;
 		}
 
-		if (k_uptime_delta(&time_stamp) < FRAME_TIME) {
+		if ((k_uptime_get() - frame_time) < FRAME_TIME) {
 			continue;
 		}
 
 		err = nrf_esb_stop_rx();
 		if (err) {
 			LOG_ERR("error stopping RX mode: %d", err);
-			continue;
 		}
 
 		err = nrf_esb_start_tx();
 		if (err) {
 			LOG_ERR("error starting TX mode: %d", err);
-			continue;
 		}
 	}
 }

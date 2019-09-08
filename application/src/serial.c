@@ -30,35 +30,35 @@ void serial_callback(struct device *device)
 
 	if (uart_irq_rx_ready(device)) {
 		static u8_t buffer[CONFIG_NRF_ESB_MAX_PAYLOAD_LENGTH];
+		static struct nrf_esb_payload payload = NRF_ESB_CREATE_PAYLOAD(0);
 
-		u32_t received = uart_fifo_read(device, buffer, sizeof(buffer));
+		do {
+			int received = uart_fifo_read(device, buffer, sizeof(buffer));
 
-		if (received == 0) {
-			return;
-		}
+			if (received < 0) {
+				LOG_ERR("error during uart_fifo_read: %d", err);
+			}
 
-		if (received < 0) {
-			LOG_ERR("error during uart_fifo_read");
-		}
+			if (received == 0) {
+				break;
+			}
 
-		struct nrf_esb_payload payload;
-		memcpy(payload.data, buffer, received);
-		payload.length = received;
-		payload.pipe = 0;
+			memcpy(payload.data, buffer, received);
+			payload.length = received;
 
-		err = k_msgq_put(&serial_frame_q, &payload, K_NO_WAIT);
-		if (err) {
-			LOG_ERR("Error during serial queue put");
-		}
+			err = k_msgq_put(&serial_frame_q, &payload, K_NO_WAIT);
+			if (err) {
+				LOG_ERR("Error during serial queue put: %d", err);
+			}
+		} while (1);
 	}
 }
 
 void serial_thread_fn(void *arg0, void *arg1, void *arg2)
 {
-	LOG_DBG("Starting serial thread: %p", k_current_get());
+	LOG_INF("Starting serial thread: %p", k_current_get());
 
 	struct device *serial_device = device_get_binding("CDC_ACM_0");
-
 	uart_irq_callback_set(serial_device, serial_callback);
 	uart_irq_rx_enable(serial_device);
 
