@@ -1,25 +1,24 @@
 #include <device.h>
 #include <logging/log.h>
+#include <nrf_esb.h>
 #include <stdio.h>
 #include <string.h>
 #include <uart.h>
 #include <zephyr.h>
 #include <zephyr/types.h>
 
-#include "serial.h"
-#include "types.h"
-
-#define PRIORITY -3
+#define PRIORITY 3
 #define STACKSIZE KB(2)
 
 LOG_MODULE_REGISTER(Serial, LOG_LEVEL_DBG);
 
-extern struct k_sem wired_activity_alert;
-// extern struct k_mem_slab package_buffer_slab;
-extern struct k_fifo serial2wireless_fifo;
-extern struct k_fifo wireless2serial_fifo;
+int err = 0;
+extern struct k_sem led_ind_wired;
 
-void serial_thread_function(void* arg0, void* arg1, void* arg2);
+extern struct k_msgq serial_frame_q;
+extern struct k_msgq esb_frame_q;
+
+void serial_thread_function(void *arg0, void *arg1, void *arg2);
 
 K_THREAD_DEFINE(serial_thread,
                 STACKSIZE,
@@ -31,9 +30,9 @@ K_THREAD_DEFINE(serial_thread,
                 0,
                 K_FOREVER);
 
-void serial_callback(struct device* device)
+void serial_callback(struct device *device)
 {
-	k_sem_give(&wired_activity_alert);
+	k_sem_give(&led_ind_wired);
 
 	uart_irq_update(device);
 
@@ -48,9 +47,17 @@ void serial_callback(struct device* device)
 				break;
 			}
 
-			static struct message_t* message;
+			struct nrf_esb_payload payload;
 
-			// int err = k_mem_slab_alloc(&package_buffer_slab, (void**)&message, K_NO_WAIT);
+			memcpy(payload.data, buffer, received);
+			payload.length = received;
+			payload.pipe = 0;
+			err = k_msgq_put(&serial_frame_q, &payload, K_NO_WAIT); // int err = k_mem_slab_alloc(&package_buffer_slab, (void**)&message, K_NO_WAIT);
+
+			if (err) {
+				LOG_ERR("Error during serial_queue put"); /* code */
+			}
+
 			// __ASSERT(err == 0, "k_mem_slab_alloc (%d)", err);
 
 			// if (err) {
@@ -58,33 +65,26 @@ void serial_callback(struct device* device)
 			// 	break;
 			// }
 
-			memcpy(message->data, buffer, received);
-			message->length = received;
-			k_fifo_put(&serial2wireless_fifo, message);
+			//memcpy(message->data, buffer, received);
+			//message->length = received;
+
 		} while (0);
 	}
 }
 
-void serial_thread_function(void* arg0, void* arg1, void* arg2)
+void serial_thread_function(void *arg0, void *arg1, void *arg2)
 {
-	LOG_INF("Starting serial thread");
+	LOG_DBG("Starting serial thread: %p", k_current_get());
 
-	struct device* serial_device = device_get_binding(DT_NORDIC_NRF_USBD_VIRTUALCOM_LABEL);
-
-	while (1) {
-		struct message_t* message = k_fifo_get(&wireless2serial_fifo, K_FOREVER);
-		uart_fifo_fill(serial_device, message->data, message->length);
-		LOG_HEXDUMP_DBG(message->data, message->length, NULL);
-		// k_mem_slab_free(&package_buffer_slab, (void**)&message);
-	}
-}
-
-void serial_init(void)
-{
-	struct device* serial_device = device_get_binding(DT_NORDIC_NRF_USBD_VIRTUALCOM_LABEL);
+	struct device *serial_device = device_get_binding("CDC_ACM_0");
 
 	uart_irq_callback_set(serial_device, serial_callback);
 	uart_irq_rx_enable(serial_device);
 
-	k_thread_start(serial_thread);
+	while (1) {
+		struct nrf_esb_payload payload;
+		k_msgq_get(&esb_frame_q, &payload, K_FOREVER);
+		uart_fifo_fill(serial_device, payload.data, payload.length);
+		LOG_HEXDUMP_DBG(payload.data, payload.length, NULL);
+	}
 }

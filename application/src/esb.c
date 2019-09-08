@@ -24,6 +24,7 @@
 	}
 
 extern struct k_sem led_ind_wireless;
+
 extern struct k_msgq esb_frame_q;
 extern struct k_msgq serial_frame_q;
 

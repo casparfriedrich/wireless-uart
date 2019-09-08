@@ -5,10 +5,9 @@
 #include <zephyr/types.h>
 
 #include "heartbeat.h"
-#include "serial.h"
-#include "types.h"
 
 extern const k_tid_t esb_thread;
+extern const k_tid_t serial_thread;
 
 LOG_MODULE_REGISTER(Main);
 
@@ -29,7 +28,8 @@ void main(void)
 	LOG_INF("Starting Application: %p", k_current_get());
 
 	hf_clock_init();
-	heartbeat_init(LED0_GPIO_CONTROLLER, LED0_GPIO_PIN);
+	heartbeat_init(DT_ALIAS_LED0_GPIOS_CONTROLLER, DT_ALIAS_LED0_GPIOS_PIN);
 
 	k_thread_start(esb_thread);
+	k_thread_start(serial_thread);
 }
