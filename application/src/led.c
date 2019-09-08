@@ -15,15 +15,15 @@ K_SEM_DEFINE(led_ind_wireless, 0, 1);
 static const u32_t led_on = 0;
 static const u32_t led_off = 1;
 
-static const u32_t led1_gpio_pin = LED1_GPIO_PIN;
-static const u32_t led2_gpio_pin = LED2_GPIO_PIN;
-static const u32_t led3_gpio_pin = LED3_GPIO_PIN;
+static const u32_t led1_gpio_pin = DT_ALIAS_LED1_GPIOS_PIN;
+static const u32_t led2_gpio_pin = DT_ALIAS_LED2_GPIOS_PIN;
+static const u32_t led3_gpio_pin = DT_ALIAS_LED3_GPIOS_PIN;
 
-static inline void led_init(const char* device_name, u32_t* pin)
+static inline void led_init(const char *device_name, u32_t *pin)
 {
 	int err __unused = 0;
 
-	struct device* controller = device_get_binding(device_name);
+	struct device *controller = device_get_binding(device_name);
 	__ASSERT_NO_MSG(controller != NULL);
 
 	err = gpio_pin_configure(controller, *pin, GPIO_DIR_OUT);
@@ -33,11 +33,11 @@ static inline void led_init(const char* device_name, u32_t* pin)
 	__ASSERT(err == 0, "gpio_pin_write (%d)", err);
 }
 
-static void led_hold(const char* device_name, u32_t* pin, struct k_sem* alert)
+static void led_hold(const char *device_name, u32_t *pin, struct k_sem *alert)
 {
 	led_init(device_name, pin);
 
-	struct device* controller = device_get_binding(device_name);
+	struct device *controller = device_get_binding(device_name);
 	__ASSERT_NO_MSG(controller != NULL);
 
 	while (1) {
@@ -46,11 +46,11 @@ static void led_hold(const char* device_name, u32_t* pin, struct k_sem* alert)
 	}
 }
 
-static void led_flash(const char* device_name, u32_t* pin, struct k_sem* alert)
+static void led_flash(const char *device_name, u32_t *pin, struct k_sem *alert)
 {
 	led_init(device_name, pin);
 
-	struct device* controller = device_get_binding(device_name);
+	struct device *controller = device_get_binding(device_name);
 	__ASSERT_NO_MSG(controller != NULL);
 
 	while (1) {
@@ -61,32 +61,8 @@ static void led_flash(const char* device_name, u32_t* pin, struct k_sem* alert)
 	}
 }
 
-K_THREAD_DEFINE(led_error_thread,
-                STACKSIZE,
-                led_hold,
-                LED1_GPIO_CONTROLLER,
-                &led1_gpio_pin,
-                &led_ind_error,
-                PRIORITY,
-                0,
-                K_NO_WAIT);
+K_THREAD_DEFINE(led_error_thread, STACKSIZE, led_hold, DT_ALIAS_LED1_GPIOS_CONTROLLER, &led1_gpio_pin, &led_ind_error, PRIORITY, 0, K_NO_WAIT);
 
-K_THREAD_DEFINE(wired_activity_led_thread,
-                STACKSIZE,
-                led_flash,
-                LED2_GPIO_CONTROLLER,
-                &led2_gpio_pin,
-                &led_ind_wired,
-                PRIORITY,
-                0,
-                K_NO_WAIT);
+K_THREAD_DEFINE(wired_activity_led_thread, STACKSIZE, led_flash, DT_ALIAS_LED2_GPIOS_CONTROLLER, &led2_gpio_pin, &led_ind_wired, PRIORITY, 0, K_NO_WAIT);
 
-K_THREAD_DEFINE(wireless_activity_led_thread,
-                STACKSIZE,
-                led_flash,
-                LED3_GPIO_CONTROLLER,
-                &led3_gpio_pin,
-                &led_ind_wireless,
-                PRIORITY,
-                0,
-                K_NO_WAIT);
+K_THREAD_DEFINE(wireless_activity_led_thread, STACKSIZE, led_flash, DT_ALIAS_LED3_GPIOS_CONTROLLER, &led3_gpio_pin, &led_ind_wireless, PRIORITY, 0, K_NO_WAIT);
