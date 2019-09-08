@@ -8,8 +8,8 @@
 #include <zephyr/types.h>
 
 #define PRIORITY 3
-#define STACKSIZE KB(2)
-#define FRAME_TIME K_MSEC(20)
+#define STACKSIZE KB(10)
+#define FRAME_TIME K_MSEC(50)
 #define DEFAULT_BASE_ADDR_0            \
 	{                              \
 		0xE7, 0xE7, 0xE7, 0xE7 \
@@ -64,8 +64,8 @@ void esb_event_callback(struct nrf_esb_evt const *event)
 		break;
 
 	case NRF_ESB_EVENT_TX_FAILED:
-		LOG_DBG("NRF_ESB_EVENT_TX_FAILED");
-		if (nrf_esb_pop_tx()) {
+		err = nrf_esb_pop_tx();
+		if (err) {
 			LOG_ERR("error removing package");
 		}
 		break;
@@ -79,7 +79,7 @@ void esb_event_callback(struct nrf_esb_evt const *event)
 
 		err = k_msgq_put(&esb_frame_q, &payload, K_NO_WAIT);
 		if (err) {
-			LOG_WRN("k_msgq_put: %d", err);
+			LOG_WRN("error storing message: %d", err);
 		}
 
 		break;

@@ -11,8 +11,8 @@ extern const k_tid_t serial_thread;
 
 LOG_MODULE_REGISTER(Main);
 
-K_MSGQ_DEFINE(esb_frame_q, sizeof(struct nrf_esb_payload), 10, 4);
-K_MSGQ_DEFINE(serial_frame_q, sizeof(struct nrf_esb_payload), 10, 4);
+K_MSGQ_DEFINE(esb_frame_q, sizeof(struct nrf_esb_payload), 100, 4);
+K_MSGQ_DEFINE(serial_frame_q, sizeof(struct nrf_esb_payload), 100, 4);
 
 void hf_clock_init(void)
 {
