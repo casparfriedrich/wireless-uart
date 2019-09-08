@@ -3,10 +3,10 @@
 #include <zephyr.h>
 #include <zephyr/types.h>
 
-#define PRIORITY 0
+#define PRIORITY 1
 #define STACKSIZE KB(1)
 
-LOG_MODULE_REGISTER(Led, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(LED, LOG_LEVEL_DBG);
 
 K_SEM_DEFINE(led_ind_error, 0, 1);
 K_SEM_DEFINE(led_ind_wired, 0, 1);

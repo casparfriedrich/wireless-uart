@@ -5,26 +5,23 @@
 
 #include "heartbeat.h"
 
-LOG_MODULE_REGISTER(Heartbeat);
+LOG_MODULE_REGISTER(heartbeat);
 
-static struct k_timer heartbeat_timer;
-static const char* led_controller;
-static u32_t led_pin;
+static int err = 0;
+static const char *led_controller = NULL;
+static u32_t led_pin = 0;
 
-static void heartbeat_expiry_fn(struct k_timer* timer)
+static void heartbeat_expiry_fn(struct k_timer *timer)
 {
 	static int phase = 0;
 
-	struct device* controller = device_get_binding(led_controller);
-	__ASSERT_NO_MSG(controller != NULL);
+	struct device *controller = device_get_binding(led_controller);
 	if (!controller) {
-		LOG_ERR("error retrieving device");
+		LOG_ERR("error binding device");
 		return;
 	}
 
-	int err __unused = 0;
-
-	switch (phase % 32) {
+	switch (phase++ % 32) {
 	case 0:
 		err = gpio_pin_write(controller, led_pin, 0);
 		if (err) {
@@ -45,17 +42,17 @@ static void heartbeat_expiry_fn(struct k_timer* timer)
 		break;
 	}
 
-	phase++;
+	phase %= 32;
 }
 
-int heartbeat_start(const char* controller, u32_t pin)
-{
-	int err __unused = 0;
+K_TIMER_DEFINE(heartbeat_timer, heartbeat_expiry_fn, NULL);
 
+int heartbeat_init(const char *controller, u32_t pin)
+{
 	led_controller = controller;
 	led_pin = pin;
 
-	struct device* device = device_get_binding(led_controller);
+	struct device *device = device_get_binding(led_controller);
 	if (!device) {
 		LOG_ERR("error retrieving device: %d", err);
 		return -ENODEV;
@@ -73,8 +70,7 @@ int heartbeat_start(const char* controller, u32_t pin)
 		return err;
 	}
 
-	k_timer_init(&heartbeat_timer, heartbeat_expiry_fn, NULL);
-	k_timer_start(&heartbeat_timer, 0, K_MSEC(50));
+	k_timer_start(&heartbeat_timer, 0, K_MSEC(40));
 
 	return 0;
 }

@@ -10,10 +10,10 @@
 /* Peripheral voltage ON/OFF GPIO */
 #define PERIPH_PON_PIN 0
 
-static int board_reel_board_init(struct device* dev)
+static int board_reel_board_init(struct device *dev)
 {
 	ARG_UNUSED(dev);
-	volatile NRF_GPIO_Type* gpio = NRF_P1;
+	volatile NRF_GPIO_Type *gpio = NRF_P1;
 
 	/*
 	 * Workaround to enable peripheral voltage.
@@ -33,7 +33,11 @@ static int board_reel_board_init(struct device* dev)
 	 * (High-Impedance state of pin B from Dual-Supply Bus Transceiver).
 	 */
 	gpio = NRF_P0;
-	gpio->PIN_CNF[DT_NORDIC_NRF_UARTE_0_RX_PIN] =
+	gpio->PIN_CNF[DT_INST_0_NORDIC_NRF_UARTE_RX_PIN] =
+	    (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) |
+	    (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos) |
+	    (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);
+	gpio->PIN_CNF[DT_INST_0_NORDIC_NRF_UARTE_TX_PIN] =
 	    (GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) |
 	    (GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos) |
 	    (GPIO_PIN_CNF_DIR_Input << GPIO_PIN_CNF_DIR_Pos);

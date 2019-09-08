@@ -1,5 +1,6 @@
 #include <logging/log.h>
 #include <nrf_clock.h>
+#include <nrf_esb.h>
 #include <zephyr.h>
 #include <zephyr/types.h>
 
@@ -11,10 +12,8 @@ extern const k_tid_t esb_thread;
 
 LOG_MODULE_REGISTER(Main);
 
-K_MEM_SLAB_DEFINE(package_buffer_slab, sizeof(struct message_t), 16, 4);
-
-K_FIFO_DEFINE(serial2wireless_fifo);
-K_FIFO_DEFINE(wireless2serial_fifo);
+K_MSGQ_DEFINE(esb_frame_q, sizeof(struct nrf_esb_payload), 10, 4);
+K_MSGQ_DEFINE(serial_frame_q, sizeof(struct nrf_esb_payload), 10, 4);
 
 void hf_clock_init(void)
 {
@@ -27,10 +26,10 @@ void hf_clock_init(void)
 
 void main(void)
 {
-	hf_clock_init();
+	LOG_INF("Starting Application: %p", k_current_get());
 
-	heartbeat_start(LED0_GPIO_CONTROLLER, LED0_GPIO_PIN);
+	hf_clock_init();
+	heartbeat_init(LED0_GPIO_CONTROLLER, LED0_GPIO_PIN);
 
 	k_thread_start(esb_thread);
-	// serial_init();
 }

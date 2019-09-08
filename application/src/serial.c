@@ -15,7 +15,7 @@
 LOG_MODULE_REGISTER(Serial, LOG_LEVEL_DBG);
 
 extern struct k_sem wired_activity_alert;
-extern struct k_mem_slab package_buffer_slab;
+// extern struct k_mem_slab package_buffer_slab;
 extern struct k_fifo serial2wireless_fifo;
 extern struct k_fifo wireless2serial_fifo;
 
@@ -50,13 +50,13 @@ void serial_callback(struct device* device)
 
 			static struct message_t* message;
 
-			int err = k_mem_slab_alloc(&package_buffer_slab, (void**)&message, K_NO_WAIT);
-			__ASSERT(err == 0, "k_mem_slab_alloc (%d)", err);
+			// int err = k_mem_slab_alloc(&package_buffer_slab, (void**)&message, K_NO_WAIT);
+			// __ASSERT(err == 0, "k_mem_slab_alloc (%d)", err);
 
-			if (err) {
-				LOG_WRN("No memory");
-				break;
-			}
+			// if (err) {
+			// 	LOG_WRN("No memory");
+			// 	break;
+			// }
 
 			memcpy(message->data, buffer, received);
 			message->length = received;
@@ -75,7 +75,7 @@ void serial_thread_function(void* arg0, void* arg1, void* arg2)
 		struct message_t* message = k_fifo_get(&wireless2serial_fifo, K_FOREVER);
 		uart_fifo_fill(serial_device, message->data, message->length);
 		LOG_HEXDUMP_DBG(message->data, message->length, NULL);
-		k_mem_slab_free(&package_buffer_slab, (void**)&message);
+		// k_mem_slab_free(&package_buffer_slab, (void**)&message);
 	}
 }
 

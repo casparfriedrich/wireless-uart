@@ -4,9 +4,7 @@ BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBraces: Linux
 ColumnLimit: 0
-DerivePointerAlignment: false
 IndentWidth: 8
 KeepEmptyLinesAtTheStartOfBlocks: false
-PointerAlignment: Left
 UseTab: ForIndentation
 ...
