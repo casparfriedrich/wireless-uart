@@ -7,6 +7,8 @@
 #include <zephyr.h>
 #include <zephyr/types.h>
 
+#include "led.h"
+
 #define PRIORITY 3
 #define STACKSIZE KB(10)
 #define FRAME_TIME K_MSEC(20)
@@ -22,8 +24,6 @@
 	{                                                      \
 		0xE7, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8 \
 	}
-
-extern struct k_sem led_ind_wireless;
 
 extern struct k_msgq esb_frame_q;
 extern struct k_msgq serial_frame_q;
@@ -54,7 +54,7 @@ void esb_event_callback(struct nrf_esb_evt const *event)
 	int err = 0;
 	struct nrf_esb_payload payload;
 
-	k_sem_give(&led_ind_wireless);
+	led_flash(LED_3);
 	frame_time = k_uptime_get();
 
 	switch (event->evt_id) {

@@ -7,12 +7,12 @@
 #include <zephyr.h>
 #include <zephyr/types.h>
 
+#include "led.h"
+
 #define PRIORITY 3
 #define STACKSIZE KB(10)
 
 LOG_MODULE_REGISTER(Serial, LOG_LEVEL_DBG);
-
-extern struct k_sem led_ind_wired;
 
 extern struct k_msgq serial_frame_q;
 extern struct k_msgq esb_frame_q;
@@ -25,7 +25,7 @@ void serial_callback(struct device *device)
 {
 	int err = 0;
 
-	k_sem_give(&led_ind_wired);
+	led_flash(LED_2);
 	uart_irq_update(device);
 
 	if (uart_irq_rx_ready(device)) {

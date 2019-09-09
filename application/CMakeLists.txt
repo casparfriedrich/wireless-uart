@@ -6,7 +6,6 @@ include($ENV{ZEPHYR_BASE}/cmake/app/boilerplate.cmake NO_POLICY_SCOPE)
 
 project("Wireless UART")
 
-file(GLOB app_sources src/*.c)
+set(APP_SOURCES src/main.c src/esb.c src/serial.c src/led.c)
 
-target_sources(app PRIVATE ${app_sources})
-
+target_sources(app PRIVATE ${APP_SOURCES})
