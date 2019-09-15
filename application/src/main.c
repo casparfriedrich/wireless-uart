@@ -36,17 +36,10 @@ void main(void)
 	int heartbeat_phase = 0;
 
 	while (1) {
-		switch (heartbeat_phase++ % 4) {
-		case 0:
-		case 1:
-			led_flash(LED_0);
-			break;
-		default:
-			break;
-		}
-
-		heartbeat_phase %= 4;
-
-		k_sleep(K_MSEC(400));
+		led_flash(LED_0);
+		k_sleep(K_MSEC(1000));
 	}
 }
+
+
+
