@@ -1,4 +1,10 @@
 build
 
-.idea/
-cmake-build-*/
+.west/
+mbedtls/
+mcuboot/
+modules/
+nrf/
+nrfxlib/
+test/
+zephyr/
