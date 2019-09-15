@@ -3,9 +3,7 @@
 
 enum led {
 	LED_0,
-	LED_1,
-	LED_2,
-	LED_3
+	LED_1
 };
 
 void led_init(void);
