@@ -33,8 +33,6 @@ void main(void)
 	k_thread_start(esb_thread);
 	k_thread_start(serial_thread);
 
-	int heartbeat_phase = 0;
-
 	while (1) {
 		led_flash(LED_0);
 		k_sleep(K_MSEC(1000));
