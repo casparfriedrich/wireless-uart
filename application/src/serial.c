@@ -21,8 +21,9 @@ void serial_thread_fn(void *arg0, void *arg1, void *arg2);
 
 K_THREAD_DEFINE(serial_thread, STACKSIZE, serial_thread_fn, NULL, NULL, NULL, PRIORITY, 0, K_FOREVER);
 
-void serial_callback(struct device *device)
+void serial_callback(void *user_data)
 {
+	struct device *device = (struct device *)user_data;
 	int err = 0;
 
 	led_flash(LED_2);
@@ -56,10 +57,10 @@ void serial_callback(struct device *device)
 
 void serial_thread_fn(void *arg0, void *arg1, void *arg2)
 {
-	LOG_INF("Starting serial thread: %p", k_current_get());
+	LOG_INF("Starting thread: %p", k_current_get());
 
 	struct device *serial_device = device_get_binding("CDC_ACM_0");
-	uart_irq_callback_set(serial_device, serial_callback);
+	uart_irq_callback_user_data_set(serial_device, serial_callback, serial_device);
 	uart_irq_rx_enable(serial_device);
 
 	while (1) {

@@ -45,10 +45,10 @@ static void _timer_3_expiry_fn(struct k_timer *timer)
 	               LED_OFF);
 }
 
-static K_TIMER_DEFINE(_led_timer_0, _timer_0_expiry_fn, NULL);
-static K_TIMER_DEFINE(_led_timer_1, _timer_1_expiry_fn, NULL);
-static K_TIMER_DEFINE(_led_timer_2, _timer_2_expiry_fn, NULL);
-static K_TIMER_DEFINE(_led_timer_3, _timer_3_expiry_fn, NULL);
+static K_TIMER_DEFINE(_led_timer_0, _timer_0_expiry_fn, _timer_0_expiry_fn);
+static K_TIMER_DEFINE(_led_timer_1, _timer_1_expiry_fn, _timer_1_expiry_fn);
+static K_TIMER_DEFINE(_led_timer_2, _timer_2_expiry_fn, _timer_2_expiry_fn);
+static K_TIMER_DEFINE(_led_timer_3, _timer_3_expiry_fn, _timer_3_expiry_fn);
 
 void led_init()
 {
