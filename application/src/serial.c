@@ -26,7 +26,7 @@ void serial_callback(void *user_data)
 	struct device *device = (struct device *)user_data;
 	int err = 0;
 
-	led_flash(LED_2);
+	led_flash(LED_1);
 	uart_irq_update(device);
 
 	if (uart_irq_rx_ready(device)) {

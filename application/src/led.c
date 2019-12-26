@@ -38,24 +38,15 @@ static void _timer_2_expiry_fn(struct k_timer *timer)
 	               LED_OFF);
 }
 
-static void _timer_3_expiry_fn(struct k_timer *timer)
-{
-	gpio_pin_write(device_get_binding(DT_ALIAS_LED3_GPIOS_CONTROLLER),
-	               DT_ALIAS_LED3_GPIOS_PIN,
-	               LED_OFF);
-}
-
 static K_TIMER_DEFINE(_led_timer_0, _timer_0_expiry_fn, _timer_0_expiry_fn);
 static K_TIMER_DEFINE(_led_timer_1, _timer_1_expiry_fn, _timer_1_expiry_fn);
 static K_TIMER_DEFINE(_led_timer_2, _timer_2_expiry_fn, _timer_2_expiry_fn);
-static K_TIMER_DEFINE(_led_timer_3, _timer_3_expiry_fn, _timer_3_expiry_fn);
 
 void led_init()
 {
 	_led_init(DT_ALIAS_LED0_GPIOS_CONTROLLER, DT_ALIAS_LED0_GPIOS_PIN);
 	_led_init(DT_ALIAS_LED1_GPIOS_CONTROLLER, DT_ALIAS_LED1_GPIOS_PIN);
 	_led_init(DT_ALIAS_LED2_GPIOS_CONTROLLER, DT_ALIAS_LED2_GPIOS_PIN);
-	_led_init(DT_ALIAS_LED3_GPIOS_CONTROLLER, DT_ALIAS_LED3_GPIOS_PIN);
 }
 
 void led_flash(enum led led)
@@ -79,11 +70,6 @@ void led_flash(enum led led)
 		led_controller = device_get_binding(DT_ALIAS_LED2_GPIOS_CONTROLLER);
 		led_pin = DT_ALIAS_LED2_GPIOS_PIN;
 		led_timer = &_led_timer_2;
-		break;
-	case LED_3:
-		led_controller = device_get_binding(DT_ALIAS_LED3_GPIOS_CONTROLLER);
-		led_pin = DT_ALIAS_LED3_GPIOS_PIN;
-		led_timer = &_led_timer_3;
 		break;
 	}
 

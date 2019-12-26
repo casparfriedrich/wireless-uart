@@ -65,7 +65,7 @@ void esb_event_callback(struct nrf_esb_evt const *event)
 	int err = 0;
 	struct nrf_esb_payload payload;
 
-	led_flash(LED_3);
+	led_flash(LED_2);
 
 	switch (event->evt_id) {
 	case NRF_ESB_EVENT_TX_SUCCESS:
