@@ -1,5 +1,3 @@
-build
-
 .west/
 mbedtls/
 mcuboot/
@@ -7,4 +5,7 @@ modules/
 nrf/
 nrfxlib/
 test/
+tools/
 zephyr/
+
+build/
