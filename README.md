@@ -24,3 +24,19 @@ cmake -G Ninja -D BOARD=$BOARD_NAME $PATH_TO_THE_prj.conf
 
 reel_board
 
+## Roadmap/ToDos Wireless UART
+
+### Concept
+
+Connection speed as fast as possible, at least capable of handling one linux console. 
+Handling multiple uart endpoints.
+
+[] Config option for multiple UART endpoints
+	* Congfig protocol
+	* Config distribution to MASTER to UART client
+		*Baudrate
+		*RTS, CTS
+		*Start Stop bit
+	* Question: Safe config or distribute config before usage?
+[] Stable Wireless to UART connection and vica versa 
+
