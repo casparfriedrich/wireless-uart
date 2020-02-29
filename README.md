@@ -11,16 +11,30 @@ west update
 
 ## Usage
 
-To spin up a new project: 
+### with cmake
+To spin up a new project:
 
 ```bash
 source zephyr/zephyr-env.sh
-mkdir $NAME_OF_YOUR_BUILDFOLDER
-cd $NAME_OF_YOUR_BUILDFOLDER
-cmake -G Ninja -D BOARD=$BOARD_NAME $PATH_TO_THE_prj.conf
+cmake -G Ninja -D BOARD=<BOARD> -B <BUILD_FOLDER> -S application
 ```
+Build the project:
+```bash
+cmake --build <BUILD_FOLDER> [--target <MAKE_TARGET>]
+```
+### with west
+To spin up a new project:
 
-## Compadible board/ board strings
+```bash
+source zephyr/zephyr-env.sh
+west build -b <BOARD> -d <BUILD_FOLDER> application
+```
+Build the project:
+```bash
+cd <BUILD_FOLDER>
+west build 
+```
+## Compatible boards/board strings
 
 reel_board
 
@@ -28,15 +42,14 @@ reel_board
 
 ### Concept
 
-Connection speed as fast as possible, at least capable of handling one linux console. 
+Connection speed as fast as possible, at least capable of handling one linux console.
 Handling multiple uart endpoints.
 
-[] Config option for multiple UART endpoints
-	* Congfig protocol
+- [ ] Config option for multiple UART endpoints
+	* Config protocol
 	* Config distribution to MASTER to UART client
-		*Baudrate
-		*RTS, CTS
-		*Start Stop bit
-	* Question: Safe config or distribute config before usage?
-[] Stable Wireless to UART connection and vica versa 
-
+		* Baudrate
+		* RTS, CTS
+		* Start Stop bit
+	* Question: Safe config on clients or distribute config before usage?
+- [ ] Stable Wireless to UART connection and vice versa
