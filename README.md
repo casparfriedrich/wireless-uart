@@ -15,7 +15,7 @@ To spin up a new project:
 
 ```bash
 source zephyr/zephyr-env.sh
-mkdir $NAME_OF_YOU_RBUILDFOLDER
+mkdir $NAME_OF_YOUR_BUILDFOLDER
 cd $NAME_OF_YOUR_BUILDFOLDER
 cmake -G Ninja -D BOARD=$BOARD_NAME $PATH_TO_THE_prj.conf
 ```
