@@ -1,9 +1,9 @@
 #include <device.h>
+#include <drivers/uart.h>
+#include <esb.h>
 #include <logging/log.h>
-#include <nrf_esb.h>
 #include <stdio.h>
 #include <string.h>
-#include <uart.h>
 #include <zephyr.h>
 #include <zephyr/types.h>
 
@@ -30,8 +30,8 @@ void serial_callback(void *user_data)
 	uart_irq_update(device);
 
 	if (uart_irq_rx_ready(device)) {
-		static u8_t buffer[CONFIG_NRF_ESB_MAX_PAYLOAD_LENGTH];
-		static struct nrf_esb_payload payload = NRF_ESB_CREATE_PAYLOAD(0);
+		static u8_t buffer[CONFIG_ESB_MAX_PAYLOAD_LENGTH];
+		static struct esb_payload payload = ESB_CREATE_PAYLOAD(0);
 
 		do {
 			int received = uart_fifo_read(device, buffer, sizeof(buffer));
@@ -127,7 +127,7 @@ void serial_thread_fn(void *arg0, void *arg1, void *arg2)
 	uart_irq_rx_enable(serial_device);
 
 	while (1) {
-		static struct nrf_esb_payload payload;
+		static struct esb_payload payload;
 		k_msgq_get(&esb_frame_q, &payload, K_FOREVER);
 		uart_fifo_fill(serial_device, payload.data, payload.length);
 	}

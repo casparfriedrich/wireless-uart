@@ -1,8 +1,8 @@
-#include <clock_control.h>
 #include <device.h>
+#include <drivers/clock_control.h>
+#include <esb.h>
 #include <hal/nrf_clock.h>
 #include <logging/log.h>
-#include <nrf_esb.h>
 #include <zephyr.h>
 #include <zephyr/types.h>
 
@@ -13,8 +13,8 @@ LOG_MODULE_REGISTER(Main);
 extern const k_tid_t esb_thread;
 extern const k_tid_t serial_thread;
 
-K_MSGQ_DEFINE(esb_frame_q, sizeof(struct nrf_esb_payload), 100, 4);
-K_MSGQ_DEFINE(serial_frame_q, sizeof(struct nrf_esb_payload), 100, 4);
+K_MSGQ_DEFINE(esb_frame_q, sizeof(struct esb_payload), 100, 4);
+K_MSGQ_DEFINE(serial_frame_q, sizeof(struct esb_payload), 100, 4);
 
 int clocks_start(void)
 {
