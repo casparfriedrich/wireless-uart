@@ -20,6 +20,13 @@ cd $NAME_OF_YOUR_BUILDFOLDER
 cmake -G Ninja -D BOARD=$BOARD_NAME $PATH_TO_THE_prj.conf
 ```
 
+## Build
+
+```bash
+cmake [-G Ninja] -D BOARD=<BOARD> -S application -B <BUILD_FOLDER>
+cmake --build <BUILD_FOLDER> [-- TARGET]
+```
+
 ## Compadible boards/board strings
 
 reel_board
