@@ -118,7 +118,7 @@ void serial_thread_fn(void *arg0, void *arg1, void *arg2)
 {
 	LOG_INF("Starting thread: %p", k_current_get());
 
-	struct device *serial_device = device_get_binding("CDC_ACM_0");
+	struct device *serial_device = device_get_binding("CDC_ACM_1");
 
 	wait_for_dtr(serial_device);
 	uart_line_set(serial_device);
