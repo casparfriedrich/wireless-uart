@@ -35,7 +35,7 @@ void main(void)
 	}
 
 	while (1) {
-		led_flash(LED_0);
+		led_flash(LED_GREEN);
 		k_sleep(K_SECONDS(1));
 	}
 }

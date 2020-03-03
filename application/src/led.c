@@ -56,17 +56,17 @@ void led_flash(enum led led)
 	struct k_timer *led_timer = NULL;
 
 	switch (led) {
-	case LED_0:
+	case LED_RED:
 		led_controller = device_get_binding(DT_ALIAS_LED0_GPIOS_CONTROLLER);
 		led_pin = DT_ALIAS_LED0_GPIOS_PIN;
 		led_timer = &_led_timer_0;
 		break;
-	case LED_1:
+	case LED_GREEN:
 		led_controller = device_get_binding(DT_ALIAS_LED1_GPIOS_CONTROLLER);
 		led_pin = DT_ALIAS_LED1_GPIOS_PIN;
 		led_timer = &_led_timer_1;
 		break;
-	case LED_2:
+	case LED_BLUE:
 		led_controller = device_get_binding(DT_ALIAS_LED2_GPIOS_CONTROLLER);
 		led_pin = DT_ALIAS_LED2_GPIOS_PIN;
 		led_timer = &_led_timer_2;
