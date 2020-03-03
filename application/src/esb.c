@@ -65,7 +65,7 @@ void esb_event_callback(struct esb_evt const *event)
 	int err = 0;
 	struct esb_payload payload;
 
-	led_flash(LED_2);
+	led_flash(LED_BLUE);
 
 	switch (event->evt_id) {
 	case ESB_EVENT_TX_SUCCESS:
