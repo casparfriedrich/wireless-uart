@@ -1,4 +1,4 @@
-#include <gpio.h>
+#include <drivers/gpio.h>
 #include <logging/log.h>
 #include <zephyr.h>
 #include <zephyr/types.h>
