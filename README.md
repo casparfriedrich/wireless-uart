@@ -11,23 +11,33 @@ west update
 
 ## Usage
 
+### with cmake
 To spin up a new project:
 
 ```bash
 source zephyr/zephyr-env.sh
-mkdir $NAME_OF_YOUR_BUILDFOLDER
-cd $NAME_OF_YOUR_BUILDFOLDER
-cmake -G Ninja -D BOARD=$BOARD_NAME $PATH_TO_THE_prj.conf
+mkdir <BUILD_FOLDER>
+cd <BUILD_FOLDER>
+cmake -G Ninja -D BOARD=<BOARD> -B <BUILD_FOLDER> -S application
 ```
-
-## Build
-
+Build the project:
 ```bash
-cmake [-G Ninja] -D BOARD=<BOARD> -S application -B <BUILD_FOLDER>
 cmake --build <BUILD_FOLDER> [-- TARGET]
 ```
+### with west
+To spin up a new project:
 
-## Compadible boards/board strings
+```bash
+source zephyr/zephyr-env.sh
+west build -b <BOARD> -d <BUILD_FOLDER> application
+```
+Build the project:
+```bash
+cd <BUILD_FOLDER>
+west build 
+```
+###
+## Compatible boards/board strings
 
 reel_board
 
