@@ -11,4 +11,5 @@ target_sources(app
 	src/main.c
 	src/esb.c
 	src/serial.c
-	src/led.c)
+	src/led.c
+	src/app_shell.c)
