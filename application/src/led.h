@@ -2,9 +2,9 @@
 #define LEDS_H
 
 enum led {
-	LED_0,
-	LED_1,
-	LED_2
+	LED_RED,
+	LED_GREEN,
+	LED_BLUE
 };
 
 void led_init(void);

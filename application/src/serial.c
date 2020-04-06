@@ -26,7 +26,7 @@ void serial_callback(void *user_data)
 	struct device *device = (struct device *)user_data;
 	int err = 0;
 
-	led_flash(LED_1);
+	led_flash(LED_RED);
 	uart_irq_update(device);
 
 	if (uart_irq_rx_ready(device)) {
@@ -55,73 +55,11 @@ void serial_callback(void *user_data)
 	}
 }
 
-static void uart_line_set(struct device *dev)
-{
-	u32_t baudrate = 0;
-	int err = 0;
-	int dcd = 1;
-	int dsr = 1;
-
-	err = uart_line_ctrl_set(dev, LINE_CTRL_DCD, dcd);
-	if (err) {
-		LOG_ERR("Failed to set DCD: %d", err);
-	}
-
-	err = uart_line_ctrl_get(dev, LINE_CTRL_DCD, &dcd);
-	if (err) {
-		LOG_WRN("Failed to get DCD: %d", err);
-	} else {
-		LOG_INF("DCD: %d", dcd);
-	}
-
-	err = uart_line_ctrl_set(dev, LINE_CTRL_DSR, dsr);
-	if (err) {
-		LOG_ERR("Failed to set DSR: %d", err);
-	}
-
-	err = uart_line_ctrl_get(dev, LINE_CTRL_DSR, &dsr);
-	if (err) {
-		LOG_WRN("Failed to get DSR: %d", err);
-	} else {
-		LOG_INF("DCD: %d", dsr);
-	}
-
-	// k_sleep(K_SECONDS(1));
-
-	err = uart_line_ctrl_get(dev, LINE_CTRL_BAUD_RATE, &baudrate);
-	if (err) {
-		LOG_ERR("Failed to get baudrate: %d", err);
-	} else {
-		LOG_INF("Baudrate: %d", baudrate);
-	}
-}
-
-static void wait_for_dtr(struct device *device)
-{
-	int dtr = 0;
-
-	LOG_DBG("Waiting for connection...");
-
-	while (1) {
-		uart_line_ctrl_get(device, LINE_CTRL_DTR, &dtr);
-		if (dtr) {
-			break;
-		}
-
-		k_sleep(K_MSEC(100));
-	}
-
-	LOG_DBG("Connected");
-}
-
 void serial_thread_fn(void *arg0, void *arg1, void *arg2)
 {
 	LOG_INF("Starting thread: %p", k_current_get());
 
 	struct device *serial_device = device_get_binding("CDC_ACM_1");
-
-	wait_for_dtr(serial_device);
-	uart_line_set(serial_device);
 
 	uart_irq_callback_user_data_set(serial_device, serial_callback, serial_device);
 	uart_irq_rx_enable(serial_device);
