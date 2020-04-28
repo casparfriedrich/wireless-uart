@@ -12,17 +12,17 @@
 #define PRIORITY 3
 #define STACKSIZE KB(10)
 #define FRAME_TIME K_MSEC(10)
-#define DEFAULT_BASE_ADDR_0            \
-	{                              \
-		0xE7, 0xE7, 0xE7, 0xE7 \
+#define DEFAULT_BASE_ADDR_0                                                    \
+	{                                                                      \
+		0xE7, 0xE7, 0xE7, 0xE7                                         \
 	}
-#define DEFAULT_BASE_ADDR_1            \
-	{                              \
-		0xC2, 0xC2, 0xC2, 0xC2 \
+#define DEFAULT_BASE_ADDR_1                                                    \
+	{                                                                      \
+		0xC2, 0xC2, 0xC2, 0xC2                                         \
 	}
-#define DEFAULT_ADDR_PREFIX                                    \
-	{                                                      \
-		0xE7, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8 \
+#define DEFAULT_ADDR_PREFIX                                                    \
+	{                                                                      \
+		0xE7, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8                 \
 	}
 
 extern struct k_msgq esb_frame_q;
@@ -30,13 +30,7 @@ extern struct k_msgq serial_frame_q;
 
 static int tx_frame_counter = 0;
 
-static void esb_thread_fn(void *arg0, void *arg1, void *arg2);
-static void frame_timer_expiry_fn(struct k_timer *timer);
-
 LOG_MODULE_REGISTER(ESB, LOG_LEVEL_DBG);
-
-K_THREAD_DEFINE(esb_thread, STACKSIZE, esb_thread_fn, NULL, NULL, NULL, PRIORITY, 0, K_FOREVER);
-K_TIMER_DEFINE(frame_timer, frame_timer_expiry_fn, frame_timer_expiry_fn);
 
 void frame_timer_expiry_fn(struct k_timer *timer)
 {
@@ -59,6 +53,8 @@ void frame_timer_expiry_fn(struct k_timer *timer)
 		}
 	}
 }
+
+K_TIMER_DEFINE(frame_timer, frame_timer_expiry_fn, frame_timer_expiry_fn);
 
 void esb_event_callback(struct esb_evt const *event)
 {
@@ -154,3 +150,6 @@ void esb_thread_fn(void *arg0, void *arg1, void *arg2)
 		tx_frame_counter++;
 	}
 }
+
+K_THREAD_DEFINE(esb_thread, STACKSIZE, esb_thread_fn, NULL, NULL, NULL,
+		PRIORITY, 0, K_NO_WAIT);
