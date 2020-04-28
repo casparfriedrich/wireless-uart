@@ -1,10 +1,1 @@
----
-AllowShortFunctionsOnASingleLine: Empty
-BinPackArguments: false
-BinPackParameters: false
-BreakBeforeBraces: Linux
-ColumnLimit: 0
-IndentWidth: 8
-KeepEmptyLinesAtTheStartOfBlocks: false
-UseTab: ForIndentation
-...
+zephyr/.clang-format
