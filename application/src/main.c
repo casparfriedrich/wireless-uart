@@ -23,8 +23,6 @@ void main(void)
 
 	LOG_INF("Starting Application: %p", k_current_get());
 
-	led_init();
-
 	k_thread_start(esb_thread);
 	k_thread_start(serial_thread);
 
