@@ -17,10 +17,6 @@ LOG_MODULE_REGISTER(Serial, LOG_LEVEL_DBG);
 extern struct k_msgq serial_frame_q;
 extern struct k_msgq esb_frame_q;
 
-void serial_thread_fn(void *arg0, void *arg1, void *arg2);
-
-K_THREAD_DEFINE(serial_thread, STACKSIZE, serial_thread_fn, NULL, NULL, NULL, PRIORITY, 0, K_FOREVER);
-
 void serial_callback(void *user_data)
 {
 	struct device *device = (struct device *)user_data;
@@ -34,7 +30,8 @@ void serial_callback(void *user_data)
 		static struct esb_payload payload = ESB_CREATE_PAYLOAD(0);
 
 		do {
-			int received = uart_fifo_read(device, buffer, sizeof(buffer));
+			int received =
+				uart_fifo_read(device, buffer, sizeof(buffer));
 
 			if (received < 0) {
 				LOG_ERR("error during uart_fifo_read: %d", err);
@@ -49,7 +46,8 @@ void serial_callback(void *user_data)
 
 			err = k_msgq_put(&serial_frame_q, &payload, K_NO_WAIT);
 			if (err) {
-				LOG_ERR("Error during serial queue put: %d", err);
+				LOG_ERR("Error during serial queue put: %d",
+					err);
 			}
 		} while (1);
 	}
@@ -61,7 +59,8 @@ void serial_thread_fn(void *arg0, void *arg1, void *arg2)
 
 	struct device *serial_device = device_get_binding("CDC_ACM_1");
 
-	uart_irq_callback_user_data_set(serial_device, serial_callback, serial_device);
+	uart_irq_callback_user_data_set(serial_device, serial_callback,
+					serial_device);
 	uart_irq_rx_enable(serial_device);
 
 	while (1) {
@@ -70,3 +69,6 @@ void serial_thread_fn(void *arg0, void *arg1, void *arg2)
 		uart_fifo_fill(serial_device, payload.data, payload.length);
 	}
 }
+
+K_THREAD_DEFINE(serial_thread, STACKSIZE, serial_thread_fn, NULL, NULL, NULL,
+		PRIORITY, 0, K_NO_WAIT);

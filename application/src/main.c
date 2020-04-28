@@ -23,9 +23,6 @@ void main(void)
 
 	LOG_INF("Starting Application: %p", k_current_get());
 
-	k_thread_start(esb_thread);
-	k_thread_start(serial_thread);
-
 	err = usb_enable(NULL);
 	if (err != 0) {
 		LOG_ERR("Failed to enable USB");
