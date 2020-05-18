@@ -63,7 +63,7 @@ void led_flash(enum led led)
 	}
 
 	gpio_pin_set(led_controller, led_pin, LED_ON);
-	k_timer_start(led_timer, LED_FLASH_TIMEOUT, 0);
+	k_timer_start(led_timer, LED_FLASH_TIMEOUT, K_NO_WAIT);
 }
 
 static void _led_init(const char *device_name, u32_t led_pin)

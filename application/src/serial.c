@@ -1,13 +1,14 @@
+#include "led.h"
+
 #include <device.h>
 #include <drivers/uart.h>
 #include <esb.h>
 #include <logging/log.h>
-#include <stdio.h>
-#include <string.h>
 #include <zephyr.h>
 #include <zephyr/types.h>
 
-#include "led.h"
+#include <stdio.h>
+#include <string.h>
 
 #define PRIORITY 3
 #define STACKSIZE KB(10)
@@ -71,4 +72,4 @@ void serial_thread_fn(void *arg0, void *arg1, void *arg2)
 }
 
 K_THREAD_DEFINE(serial_thread, STACKSIZE, serial_thread_fn, NULL, NULL, NULL,
-		PRIORITY, 0, K_NO_WAIT);
+		PRIORITY, 0, 0);

@@ -1,3 +1,5 @@
+#include "led.h"
+
 #include <device.h>
 #include <drivers/uart.h>
 #include <esb.h>
@@ -6,8 +8,6 @@
 #include <string.h>
 #include <zephyr.h>
 #include <zephyr/types.h>
-
-#include "led.h"
 
 #define PRIORITY 3
 #define STACKSIZE KB(10)
@@ -93,7 +93,7 @@ void esb_event_callback(struct esb_evt const *event)
 		break;
 	}
 
-	k_timer_start(&frame_timer, 0, FRAME_TIME);
+	k_timer_start(&frame_timer, K_NO_WAIT, FRAME_TIME);
 }
 
 void esb_thread_fn(void *arg0, void *arg1, void *arg2)
@@ -125,7 +125,7 @@ void esb_thread_fn(void *arg0, void *arg1, void *arg2)
 	err = esb_start_rx();
 	__ASSERT(err == 0, "esb_start_rx: %d", err);
 
-	k_timer_start(&frame_timer, 0, FRAME_TIME);
+	k_timer_start(&frame_timer, K_NO_WAIT, FRAME_TIME);
 
 	while (1) {
 		static struct esb_payload payload = ESB_CREATE_PAYLOAD(0);
@@ -152,4 +152,4 @@ void esb_thread_fn(void *arg0, void *arg1, void *arg2)
 }
 
 K_THREAD_DEFINE(esb_thread, STACKSIZE, esb_thread_fn, NULL, NULL, NULL,
-		PRIORITY, 0, K_NO_WAIT);
+		PRIORITY, 0, 0);
